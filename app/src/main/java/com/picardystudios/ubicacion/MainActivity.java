@@ -7,6 +7,13 @@ import android.Manifest;
 import android.location.Location;
 
 import android.os.Bundle;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 
@@ -140,6 +147,47 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         startLocationUpdates();
     }
 
+    void SaveLocation(String latitud, String longitud){
+
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        String url = "//domain.com/location.php";
+        try {
+            RequestQueue MyRequestQueue = Volley.newRequestQueue(this);
+
+            StringRequest MyStringRequest = new StringRequest(Request.Method.POST, url, response -> {
+                Log.e("Resultado", "-> " + response);
+
+            }, error -> Log.e("Resultado", String.valueOf(error))) {
+                protected Map<String, String> getParams() {
+                    Map<String, String> MyData = new HashMap<String, String>();
+                    MyData.put("lat", latitud);
+                    MyData.put("lng", longitud);
+                    MyData.put("usr", refreshedToken);
+                    return MyData;
+                }
+            };
+
+            MyStringRequest.setRetryPolicy(new RetryPolicy() {
+                @Override
+                public int getCurrentTimeout() {
+                    return 50000;
+                }
+
+                @Override
+                public int getCurrentRetryCount() {
+                    return 50000;
+                }
+
+                @Override
+                public void retry(VolleyError error) throws VolleyError {
+
+                }
+            });
+
+            MyRequestQueue.add(MyStringRequest);
+        } catch (Exception e) { Log.e("GuardarUbicacion",e.toString()); }
+
+    }
     private void startLocationUpdates() {
         locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -173,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
             String refreshedToken = FirebaseInstanceId.getInstance().getToken();
             Log.e("Token",refreshedToken);
+            SaveLocation(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
         }
     }
 
