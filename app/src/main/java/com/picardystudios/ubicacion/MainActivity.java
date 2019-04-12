@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private GoogleApiClient googleApiClient;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private LocationRequest locationRequest;
-    private static final long UPDATE_INTERVAL = 10000, FASTEST_INTERVAL = 10000; // = 5 seconds
+    private static final long UPDATE_INTERVAL = 60000, FASTEST_INTERVAL = 60000; // = 5 seconds
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,10 +147,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         startLocationUpdates();
     }
 
-    void SaveLocation(String latitud, String longitud){
+    public void SaveLocation(String latitud, String longitud){
 
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        String url = "//domain.com/location.php";
+        String url = "https://app.cremigal.com.ar/location.php";
         try {
             RequestQueue MyRequestQueue = Volley.newRequestQueue(this);
 
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     Map<String, String> MyData = new HashMap<String, String>();
                     MyData.put("lat", latitud);
                     MyData.put("lng", longitud);
-                    MyData.put("usr", refreshedToken);
+                    MyData.put("firebase", refreshedToken);
                     return MyData;
                 }
             };
