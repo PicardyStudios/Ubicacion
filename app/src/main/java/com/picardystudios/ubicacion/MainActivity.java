@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void SaveLocation(String latitud, String longitud){
 
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        String url = "https://app.cremigal.com.ar/location.php";
+        String url = "URL";
         try {
             RequestQueue MyRequestQueue = Volley.newRequestQueue(this);
 
